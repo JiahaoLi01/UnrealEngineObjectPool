@@ -24,7 +24,7 @@ void AExampleActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AExampleActor::OnAllocate()
+void AExampleActor::OnAllocate_Implementation()
 {
 	SetActorEnableCollision(true);
 	SetActorHiddenInGame(false);
@@ -32,7 +32,7 @@ void AExampleActor::OnAllocate()
 	SetCanBeDamaged(true);
 }
 
-void AExampleActor::OnRecycle()
+void AExampleActor::OnRecycle_Implementation()
 {
 	SetActorEnableCollision(false);
 	SetActorHiddenInGame(true);

@@ -58,9 +58,9 @@ AActor* UObjectPool::Allocate()
 			AutoReusableObjectQueue.Enqueue(SpawnedActor);
 		}
 
-		if (IReusable* ReusableInterface = Cast<IReusable>(SpawnedActor))
+		if (SpawnedActor->Implements<UReusable>())
 		{
-			ReusableInterface->OnAllocate();
+			IReusable::Execute_OnAllocate(SpawnedActor);
 		}
 	}
 
@@ -83,9 +83,9 @@ bool UObjectPool::Recycle(AActor* InActor)
 		InActor->SetFolderPath(GetObjectFolderPath_Unused());
 #endif
 
-		if (IReusable* ReusableInterface = Cast<IReusable>(InActor))
+		if (InActor->Implements<UReusable>())
 		{
-			ReusableInterface->OnRecycle();
+			IReusable::Execute_OnRecycle(InActor);
 		}
 
 		return true;
@@ -124,10 +124,9 @@ AActor* UObjectPool::ReuseAutoRecycle()
 
 		UsingObjects.Remove(TargetActor);
 
-		if (IReusable* ReusableInterface = Cast<IReusable>(TargetActor))
+		if (TargetActor->Implements<UReusable>())
 		{
-			ReusableInterface->OnRecycle();
-			
+			IReusable::Execute_OnRecycle(TargetActor);
 		}
 
 		return TargetActor;
@@ -143,6 +142,16 @@ void UObjectPool::LoadObjectsToPreloadSize()
 	{
 		AActor* SpawnedActor = CreateObjectInterval();
 		UnusedObjects.Push(SpawnedActor);
+
+		if (!ObjectPoolConfig.bRecycleWhenSpawned)
+		{
+			return;
+		}
+
+		if (SpawnedActor->Implements<UReusable>())
+		{
+			IReusable::Execute_OnRecycle(SpawnedActor);
+		}
 	}
 }
 
@@ -155,7 +164,7 @@ AActor* UObjectPool::CreateObjectInterval() const
 #endif
 	
 	return SpawnedActor;
-}
+
 
 #undef LOCTEXT_NAMESPACE
 	

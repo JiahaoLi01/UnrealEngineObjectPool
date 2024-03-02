@@ -24,6 +24,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void OnAllocate() override;
-	virtual void OnRecycle() override;
+	virtual void OnAllocate_Implementation() override;
+	virtual void OnRecycle_Implementation() override;
 };

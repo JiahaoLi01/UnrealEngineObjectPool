@@ -34,6 +34,9 @@ struct OBJECTPOOL_API FObjectPoolConfig
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Object Pool|Object Pool Config")
 	bool bAllowAutoReusable{false};
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Object Pool|Object Pool Config")
+	bool bRecycleWhenSpawned{true};
 };
 
 UCLASS(Blueprintable, BlueprintType, Within=ObjectPoolSubsystem)
@@ -54,7 +57,7 @@ public:
 
 protected:
 	/**
-	 * @property UnusedObjects : The push and pop operations of TArray is O(1), so it is used as a stack.
+	 * @property UnusedObjects : The push and pop operations of TArray is O(1), so it can be used as a stack.
 	 */
 	UPROPERTY()
 	TArray<TObjectPtr<AActor>> UnusedObjects{};
@@ -82,8 +85,8 @@ private:
 
 private:
 #if WITH_EDITOR
-	FORCEINLINE FName GetObjectFolderPath() const {return FName(ObjectPoolConfig.ObjectPoolClass->GetName() + " - ObjectPoolFolder");}
-	FORCEINLINE FName GetObjectFolderPath_Unused() const {return FName(ObjectPoolConfig.ObjectPoolClass->GetName() + " - ObjectPoolFolder/Unused");}
-	FORCEINLINE FName GetObjectFolderPath_Using() const {return FName(ObjectPoolConfig.ObjectPoolClass->GetName() + " - ObjectPoolFolder/Using");}
+	FORCEINLINE FName GetObjectFolderPath() const {return FName("Object Pool/" + ObjectPoolConfig.ObjectPoolClass->GetName() + " - ObjectPoolFolder");}
+	FORCEINLINE FName GetObjectFolderPath_Unused() const {return FName("Object Pool/" + ObjectPoolConfig.ObjectPoolClass->GetName() + " - ObjectPoolFolder/Unused");}
+	FORCEINLINE FName GetObjectFolderPath_Using() const {return FName("Object Pool/" + ObjectPoolConfig.ObjectPoolClass->GetName() + " - ObjectPoolFolder/Using");}
 #endif
 };
